@@ -281,17 +281,7 @@ class ParticleFilter(InferenceModule):
         weight with each position) is incorrect and may produce errors.
         """
         "*** YOUR CODE HERE ***"
-        '''
-        step = len(self.legalPositions) / self.numParticles
         self.particles = []
-        for i in range(self.numParticles):
-            self.particles.append(self.legalPositions[int(i*step)])
-        '''
-        self.particles = []
-        distribution = util.Counter()
-        for i in self.legalPositions:
-            distribution[i] = 1
-        distribution.normalize()
         for i in range(self.numParticles):
                 self.particles.append(self.legalPositions[i%len(self.legalPositions)])
 
@@ -335,22 +325,31 @@ class ParticleFilter(InferenceModule):
             self.particles = [self.getJailPosition()]
             return
 
+        for p in self.particles:
+            trueDistance = util.manhattanDistance(p, pacmanPosition)
+            if emissionModel[trueDistance] > 0:
+                distribution[p] += emissionModel[trueDistance]
+            else:
+                distribution[p] = 0
+        distribution.normalize()
+
+        '''
         beliefs = util.Counter()
         for pos in self.particles:
             beliefs[pos] += 1
         beliefs.normalize()
 
-
+        
         for p in self.legalPositions:
             trueDistance = util.manhattanDistance(p, pacmanPosition)
             if emissionModel[trueDistance] > 0:
-                '''print noisyDistance
-                print trueDistance
-                print emissionModel[trueDistance-1]'''
                 distribution[p] = emissionModel[trueDistance] * beliefs[p]
             else:
                 distribution[p] = 0
         distribution.normalize()
+        '''
+
+
 
         self.particles = []
         if len(distribution) == 0 or sum(distribution.values()) == 0 :
