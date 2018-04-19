@@ -332,6 +332,8 @@ class ParticleFilter(InferenceModule):
         distribution.normalize()
 
 
+		# The 'sum(dictionary.values())' statement was borrowed from:
+		# https://stackoverflow.com/questions/4880960/how-to-sum-all-the-values-in-a-dictionary
         if len(distribution) == 0 or sum(distribution.values()) == 0 :
             self.initializeUniformly(gameState)
             return
@@ -462,6 +464,8 @@ class JointParticleFilter:
         "*** YOUR CODE HERE ***"
         self.particles = itertools.product(self.legalPositions, repeat = self.numGhosts)
         self.particles = list(self.particles)
+		# The shuffle function was learned from:
+		# https://stackoverflow.com/questions/976882/shuffling-a-list-of-objects
         random.shuffle(self.particles)
         self.particles = self.particles[:self.numParticles]
 
